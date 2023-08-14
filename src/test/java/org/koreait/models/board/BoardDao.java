@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
+
 
 @Component
 public class BoardDao {
@@ -18,4 +22,21 @@ public class BoardDao {
         return cnt > 0;
     }
 
+    public BoardData get(Long id){
+        String sql = "SELECT * FROM BOARD WHERE ID = ?";
+        BoardData board = jdbcTemplate.queryForObject(sql, this::BoardMapper, id);
+
+        return board;
+    }
+
+    private BoardData BoardMapper(ResultSet rs, int i) throws SQLException {
+        BoardData board = new BoardData();
+        board.setId(rs.getLong("ID"));
+        board.setPoster(rs.getString("POSTER"));
+        board.setSubject(rs.getString("SUBJECT"));
+        board.setContent(rs.getString("CONTENT"));
+        board.setRegDt(rs.getTimestamp("REGDT").toLocalDateTime());
+
+        return board;
+    }
 }

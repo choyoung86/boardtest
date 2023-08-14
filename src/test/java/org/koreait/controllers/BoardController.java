@@ -2,14 +2,13 @@ package org.koreait.controllers;
 
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
+import org.koreait.models.board.BoardData;
 import org.koreait.models.board.BoardSaveService;
+import org.koreait.models.board.InfoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/board")
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BoardController {
 
     private final BoardSaveService boardSaveService;
+    private final InfoService infoService;
     private BoardForm boardForm;
 
     @GetMapping("/write")
@@ -35,7 +35,13 @@ public class BoardController {
         }
         return "redirect:/board/list";
 
-
     }
+    @GetMapping("/view/{id}")
+    public String view(@PathVariable long id, Model model){
+        BoardData data=infoService.get(id);
+        model.addAttribute("data", data);
+        return "board/view";
+    }
+
 
 }

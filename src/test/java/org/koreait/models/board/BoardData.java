@@ -1,6 +1,7 @@
 package org.koreait.models.board;
 
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data

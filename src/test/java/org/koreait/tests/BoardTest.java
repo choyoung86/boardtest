@@ -5,19 +5,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.koreait.controllers.BoardForm;
-import org.koreait.models.board.BoardData;
 import org.koreait.models.board.BoardSaveService;
+import org.koreait.models.board.DeleteService;
 import org.koreait.models.board.InfoService;
 import org.koreait.models.board.RequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
 @DisplayName("서버 프로그램 구현")
+@TestPropertySource(locations = "classpath:application.properties")
 public class BoardTest {
+
 
     private BoardForm boardForm;
     @Autowired
@@ -25,10 +28,13 @@ public class BoardTest {
     @Autowired
     private InfoService infoService;
 
+    @Autowired
+    private DeleteService deleteService;
+
 
     @BeforeEach
-    void init(){
-        boardForm=new BoardForm();
+    void init() {
+        boardForm = new BoardForm();
         boardForm.setPoster("사용자1");
         boardForm.setSubject("제목");
         boardForm.setContent("내용");
@@ -36,7 +42,7 @@ public class BoardTest {
 
     @Test
     @DisplayName("게시글 저장 테스트, 성공시 예외 없음")
-    public void boardSaveTest(){
+    public void boardSaveTest() {
         assertDoesNotThrow(() -> {
             boardSaveService.save(boardForm);
         });
@@ -73,10 +79,18 @@ public class BoardTest {
 
     @Test
     @DisplayName("값 읽어오기 / id값이 null일 때 BadRequestException 발생")
-    public void nullParameterTest(){
-        Long id = System.currentTimeMillis();
-        assertThrows(RequestException.class, ()->{
+    public void nullParameterTest() {
+        long id = 23l;
+        assertThrows(RequestException.class, () -> {
             infoService.get(id);
+        });
+    }
+
+    @Test
+    @DisplayName("board 삭제 테스트 - 성공 시 오류 없음")
+    public void boardDeletTest(){
+        assertDoesNotThrow(()->{
+            deleteService.deleteBoard(2L);
         });
     }
 
